@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Teacher Profile - Research Papers Platform</title>
+        <link rel="stylesheet" href="css/styles.css" />
+    </head>
+    <body>
+
+        <nav class="navbar">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="/">Home</a></li>
+                <li class="nav-item"><a href="#">About</a></li>
+                <li class="nav-item"><a href="/publications.html">Publications</a></li>
+                <li class="nav-item"><a href="/contact.html">Contact</a></li>
+                <li class="nav-item"><a href="/signup.html" class="nav-btn signup-link">Sign Up</a></li>
+                <li class="nav-item"><a href="/login.html" class="nav-btn login-link">Login</a></li>
+                <li class="nav-item"><a href="#" class="nav-btn logout-link" style="display: none;">Logout</a></li>
+            </ul>
+        </nav>
+
+        <main class="profile-page">
+            <header class="profile-header">
+                <h1 class="profile-title">Teacher Profile</h1>
+            </header>
+
+            <section class="profile-container">
+                <!-- Profile Details -->
+                <div class="profile-info">
+                    <h2 class="profile-name"></h2>
+                    <p class="profile-role"></p>
+                    <p class="profile-email">Email: <a href="#" class="profile-email-link"></a></p>
+                </div>
+
+                <!-- Submit Link Form -->
+                <div class="upload-container">
+                    <h3 class="upload-title">Submit a New Paper Link</h3>
+                    <form class="upload-form" aria-label="Submit Research Paper Link">
+                        <div class="form-group">
+                            <label for="paper-title">Paper Title <span class="required">*</span></label>
+                            <input type="text" id="paper-title" name="paper-title" required aria-required="true" />
+                        </div>
+                        <div class="form-group">
+                            <label for="paper-link">Paper URL <span class="required">*</span></label>
+                            <input type="url" id="paper-link" name="paper-link" placeholder="https://example.com/paper.pdf" required aria-required="true" />
+                        </div>
+                        <button type="submit" class="upload-btn">Submit</button>
+                    </form>
+                </div>
+
+                <!-- Papers List -->
+                <div class="papers-container">
+                    <h3 class="papers-title">Submitted Paper Links</h3>
+                    <ul class="papers-list" aria-label="List of Submitted Paper Links"></ul>
+                </div>
+            </section>
+        </main>
+        <script src="js/main.js"></script>
+    </body>
+</html>

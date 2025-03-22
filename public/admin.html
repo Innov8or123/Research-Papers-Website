@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Upload Publications</title>
+</head>
+<body>
+    <h1>Upload Publications</h1>
+    <form action="/admin/upload-publications" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xlsx, .xls" required />
+        <input type="hidden" name="_csrf" id="csrfToken">
+        <button type="submit">Upload</button>
+    </form>
+    <script>
+        // Fetch CSRF token dynamically
+        fetch('/get-csrf-token')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('csrfToken').value = data.csrfToken;
+            });
+    </script>
+</body>
+</html>

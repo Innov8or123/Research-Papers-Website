@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Contact - Research Papers Platform</title>
+        <link rel="stylesheet" href="css/styles.css" />
+    </head>
+    <body>
+        <nav class="navbar">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="/">Home</a></li>
+                <li class="nav-item"><a href="#">About</a></li>
+                <li class="nav-item">
+                    <a href="/publications.html">Publications</a>
+                </li>
+                <li class="nav-item"><a href="/contact.html">Contact</a></li>
+                <li class="nav-item">
+                    <a href="/signup.html" class="nav-btn signup-link"
+                        >Sign Up</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a href="/login.html" class="nav-btn login-link">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a
+                        href="#"
+                        class="nav-btn logout-link"
+                        style="display: none"
+                        >Logout</a
+                    >
+                </li>
+            </ul>
+        </nav>
+
+        <section class="contact-section">
+            <div class="contact-content">
+                <h1>Contact Us</h1>
+                <p>
+                    We’d love to hear from you! Reach out with any questions or
+                    feedback.
+                </p>
+                <form class="contact-form">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" required />
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required />
+                    <label for="message">Message *</label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        rows="5"
+                        required
+                    ></textarea>
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="contact-btn">Send</button>
+                </form>
+            </div>
+        </section>
+        <script src="js/main.js"></script>
+    </body>
+</html>
