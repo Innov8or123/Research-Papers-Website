@@ -4,6 +4,7 @@ const ensureAuthenticated = (req, res, next) => {
     if (!req.session.user) {
         return next(new AppError('Unauthorized. Please log in.', 401));
     }
+    req.user = req.session.user;
     next();
 };
 

@@ -1,43 +1,88 @@
-const Teacher = require('../models/teacherModel');
+// console.log('Loading teacherController.js');
+// console.log('Importing dependencies');
+const pool = require('../config/db'); 
+// console.log('Imported pool');
+const userModel = require('../models/userModel'); 
+// console.log('Imported userModel');
 const AppError = require('../utils/appError');
+// console.log('Imported AppError');
 const catchAsync = require('../utils/catchAsync');
+// console.log('Imported catchAsync');
+const Publication = require('../models/publicationModel');
 
-exports.getSubmittedPapers = catchAsync( async (req, res, next) => {
+const submitPublication = catchAsync(async (req, res) => {
+    const {
+        title,
+        url,
+        date,
+        type,
+        journalName,
+        isbn,
+        authorType,
+        publisher,
+        faculty
+    } = req.body;
+
+    // Validate 
+    if (!title || !url || !date || !type || !journalName || !authorType || !publisher || !faculty) {
+        return res.status(400).json({ 
+            message: 'All required fields must be provided.' 
+        });
+    }
+
+    const publicationData = {
+        title,
+        type_of_paper: type,
+        conference_or_journal_name: journalName,
+        issn_isbn_number: isbn || null,
+        author_type: authorType,
+        author_id: req.user.id, 
+        doi: url,
+        year_of_publication: new Date(date).getFullYear(),
+        publisher_name: publisher,
+        faculty_name: faculty
+    };
+
     try {
-        if (!req.session.user) {
-            return next(new AppError('Unauthorized. Please log in.', 401));
-        }
-        const papers = await Teacher.getSubmittedPapers(req.session.user.id);
-        res.status(200).json(papers);
+        const insertId = await Publication.insertPublication(publicationData);
+        res.status(201).json({ 
+            message: 'Publication submitted successfully', 
+            id: insertId 
+        });
+    } catch (error) {
+        console.error('Error submitting publication:', error);
+        res.status(500).json({ 
+            message: 'Failed to submit publication. Please try again.' 
+        });
+    }
+});
+
+
+// Fetch submitted publications
+const getSubmittedPublications = catchAsync( async (req, res) => {
+    try {
+        const publications = await Publication.getPublicationsByAuthor(req.user.id);
+        res.json(publications);
     } catch (error) {
         return next(new AppError(error.message, 500));
     }
 });
 
-exports.submitPaper = catchAsync( async (req, res, next) => {
+const getProfile = catchAsync(async (req, res, next) => {
     try {
         if (!req.session.user) {
             return next(new AppError('Unauthorized. Please log in.', 401));
         }
-        const { title, url } = req.body;
-        if (!title || !url) {
-            return next(new AppError('Title and URL are required.', 400));
+        const profile = await userModel.findUserById(req.session.user.id);
+        if (!profile) {
+            return next(new AppError('User not found.', 404));
         }
-        const paperId = await Teacher.submitPaper(req.session.user.id, title, url);
-        res.status(201).json({ message: 'Paper submitted successfully', paperId });
-    } catch (error) {
-        return next(new AppError(error.message, 500));
-    }
-});
-
-exports.getProfile = catchAsync( async (req, res, next) => {
-    try {
-        if (!req.session.user) {
-            return next(new AppError('Unauthorized. Please log in.', 401));
-        }
-        const profile = await Teacher.getProfile(req.session.user.id);
         res.status(200).json(profile);
     } catch (error) {
         return next(new AppError(error.message, 500));
     }
 });
+
+// console.log('Exporting functions');
+module.exports = { getSubmittedPublications, submitPublication, getProfile };
+// console.log('Exporting from teacherController:', module.exports);

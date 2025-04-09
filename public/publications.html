@@ -1,42 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Publications - Research Papers Platform</title>
-        <link rel="stylesheet" href="css/styles.css" />
-    </head>
-    <body>
-        <nav class="navbar">
-            <ul class="nav-list">
-                <li class="nav-item"><a href="/">Home</a></li>
-                <li class="nav-item"><a href="#">About</a></li>
-                <li class="nav-item"><a href="/publications.html">Publications</a></li>
-                <li class="nav-item"><a href="/contact.html">Contact</a></li>
-                <li class="nav-item"><a href="/signup.html" class="nav-btn signup-link">Sign Up</a></li>
-                <li class="nav-item"><a href="/login.html" class="nav-btn login-link">Login</a></li>
-                <li class="nav-item"><a href="#" class="nav-btn logout-link" style="display: none;">Logout</a></li>
-            </ul>
-        </nav>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Publications - Research Papers Platform</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">ResearchHub</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="/publications.html">Publications</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-buttons" id="nav-buttons"></div>
+    </nav>
 
-        <main class="publications-page">
-            <header class="publications-header">
-                <h1 class="publications-title">Browse Research Papers</h1>
-            </header>
+    <main class="publications-page">
+        <header class="publications-header">
+            <h1 class="publications-title">Browse Research Papers</h1>
+        </header>
 
-            <section class="publications-container">
-                <!-- Search Bar -->
-                <div class="search-container">
-                    <form class="search-form" aria-label="Search Papers">
-                        <input type="text" id="search" name="search" placeholder="Search by title, author, or topic..." aria-label="Search input" />
-                        <button type="submit" class="search-btn">Search</button>
-                    </form>
+        <section class="publications-container">
+            <div class="search-container">
+                <form class="search-form" aria-label="Search Papers" id="search-form">
+                    <input type="text" id="search" name="search" placeholder="Search by title, author, or topic..." aria-label="Search input" />
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+                <div id="suggestions-dropdown" class="suggestions-dropdown"></div>
+            </div>
+            <div class="items-per-page">
+                <label for="items-per-page">Items per page:</label>
+                <select id="items-per-page" onchange="changeItemsPerPage(this.value)">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+            <div id="pagination-controls"></div>
+            <div class="papers-grid" id="papers-grid"></div>
+        </section>
+    </main>
+
+    <script>
+        
+        let currentSearchTerm = '';
+        let currentPage = 1;
+        let totalPages = 1;
+        let allPublications = [];
+        const itemsPerPage = 10; 
+        let user = null;
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/profile');
+                const navButtons = document.getElementById('nav-buttons');
+                if (response.ok) {
+                    navButtons.innerHTML = `
+                        <a href="/profile.html" class="btn">Profile</a>
+                        <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                    `;
+                } else {
+                    navButtons.innerHTML = `
+                        <a href="/signup.html" class="btn">Sign Up</a>
+                        <a href="/login.html" class="btn btn-secondary">Login</a>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+                document.getElementById('nav-buttons').innerHTML = `
+                    <a href="/signup.html" class="btn">Sign Up</a>
+                    <a href="/login.html" class="btn btn-secondary">Login</a>
+                `;
+            }
+        }
+        async function fetchUserRole() {
+            try {
+                const response = await fetch('/auth/role', { credentials: 'include' });
+                if (!response.ok) throw new Error('Failed to fetch role');
+                const data = await response.json();
+                user = { role: data.role };
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+                window.location.href = '/login.html';
+            }
+        }
+
+        async function fetchPublications(page = 1) {
+            const grid = document.getElementById('papers-grid');
+            grid.innerHTML = '<div class="loading">Loading publications...</div>';
+
+            try {
+                const currentUserRole = user?.role === 'teacher' ? 'teacher' : 'student';
+                let url = `/publications?page=${page}&limit=${itemsPerPage}`;
+                if (currentSearchTerm) {
+                    url += `&search=${encodeURIComponent(currentSearchTerm)}`;
+                }
+                if (currentUserRole) {
+                    url += `&role=${currentUserRole}`;
+                }
+            
+                const response = await fetch(url, { credentials: 'include' });
+                const data = await response.json();
+            
+                if (!response.ok) {
+                    throw new Error(data.message || `HTTP error! status: ${response.status}`);
+                }
+            
+                const publications = data.data?.publications || data.publications || [];
+                const pagination = data.pagination || {
+                    page: page,
+                    totalPages: Math.ceil((data.pagination?.totalItems || publications.length) / itemsPerPage),
+                    totalItems: data.pagination?.totalItems || publications.length
+                };
+            
+                currentPage = pagination.page || 1;
+                totalPages = pagination.totalPages || 1;
+                allPublications = publications;
+            
+                displayPublications(publications);
+                updatePaginationControls(pagination);
+            } catch (error) {
+                console.error('Fetch error:', error);
+                grid.innerHTML = `
+                    <div class="error-message">
+                        <p>${error.message.includes('Unexpected token') 
+                            ? 'Invalid server response' 
+                            : error.message}</p>
+                        <button onclick="fetchPublications()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+        function displayPublications(publications) {
+            const grid = document.getElementById('papers-grid');
+            grid.innerHTML = '';
+
+            if (publications.length === 0) {
+                grid.innerHTML = '<p>No publications found.</p>';
+                return;
+            }
+
+            publications.forEach(pub => {
+                const paperDiv = document.createElement('div');
+                paperDiv.className = 'paper-card';
+                paperDiv.innerHTML = `
+                    <h3>${pub.title || 'Untitled'}</h3>
+                    <p>Type: ${pub.type_of_paper || 'N/A'}</p>
+                    <p>Conference/Journal: ${pub.conference_or_journal_name || 'N/A'}</p>
+                    <p>Year: ${pub.year_of_publication || 'N/A'}</p>
+                    <p>Publisher: ${pub.publisher_name || 'N/A'}</p>
+                    <p>Faculty: ${pub.faculty_name || 'N/A'}</p>
+
+                    ${pub.doi ? `<p><a href="${pub.doi}" target="_blank">DOI Link</a></p>` : ''}
+                `;
+                grid.appendChild(paperDiv);
+            });
+        }
+        function updatePaginationControls(pagination) {
+            const paginationDiv = document.getElementById('pagination-controls');
+            if (!pagination || totalPages <= 1) {
+                paginationDiv.innerHTML = '';
+                return;
+            }
+
+            let paginationHTML = `
+                <div class="pagination">
+                    <button ${currentPage <= 1 ? 'disabled' : ''} 
+                        onclick="fetchPublications(${currentPage - 1})">
+                        « Previous
+                    </button>
+                    
+                    <span class="page-info">
+                        Page ${currentPage} of ${totalPages}
+                    </span>
+                    
+                    <button ${currentPage >= totalPages ? 'disabled' : ''} 
+                        onclick="fetchPublications(${currentPage + 1})">
+                        Next »
+                    </button>
                 </div>
+            `;
 
-                <!-- Papers Grid -->
-                <div class="papers-grid" id="papers-grid"></div>
-            </section>
-        </main>
-        <script src="js/main.js"></script>
-    </body>
+            if (totalPages > 1) {
+                let pageButtons = '<div class="page-numbers">';
+                const startPage = Math.max(1, currentPage - 2);
+                const endPage = Math.min(totalPages, currentPage + 2);
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    pageButtons += `
+                        <button ${i === currentPage ? 'class="active"' : ''} 
+                            onclick="fetchPublications(${i})">
+                            ${i}
+                        </button>
+                    `;
+                }
+                pageButtons += '</div>';
+                paginationHTML += pageButtons;
+            }
+
+            paginationDiv.innerHTML = paginationHTML;
+        }
+        function showSuggestions(searchTerm) {
+            const dropdown = document.getElementById('suggestions-dropdown');
+            if (!searchTerm) {
+                dropdown.classList.remove('active');
+                return;
+            }
+
+            const suggestions = allPublications.filter(pub => {
+                const searchableFields = [
+                    pub.title || '',
+                    pub.conference_or_journal_name || '',
+                    pub.publisher_name || '',
+                    pub.faculty_name || '',
+                    pub.year_of_publication || ''
+                ].join(' ').toLowerCase();
+                return searchableFields.includes(searchTerm.toLowerCase());
+            }).slice(0, 5);
+
+            dropdown.innerHTML = '';
+            if (suggestions.length > 0) {
+                suggestions.forEach(pub => {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.className = 'suggestion-item';
+                    suggestionItem.textContent = `${pub.title} (${pub.faculty_name || 'N/A'})`;
+                    suggestionItem.onclick = () => {
+                        document.getElementById('search').value = pub.title;
+                        currentSearchTerm = pub.title;
+                        dropdown.classList.remove('active');
+                        fetchPublications(1);
+                    };
+                    dropdown.appendChild(suggestionItem);
+                });
+                dropdown.classList.add('active');
+            } else {
+                dropdown.classList.remove('active');
+            }
+        }
+
+        // Update the search form event listener
+        document.getElementById('search-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            currentSearchTerm = document.getElementById('search').value.toLowerCase();
+            fetchPublications(1);
+        });
+
+        // Add input event listener for autocomplete
+        document.getElementById('search').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.trim();
+            showSuggestions(searchTerm);
+        });
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            const dropdown = document.getElementById('suggestions-dropdown');
+            if (!dropdown.contains(e.target) && e.target.id !== 'search') {
+                dropdown.style.display = 'none';
+            }
+        });
+        
+        checkAuthStatus();
+        fetchPublications();
+    </script>
+</body>
 </html>

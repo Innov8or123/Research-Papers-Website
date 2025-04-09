@@ -8,27 +8,34 @@
 </head>
 <body>
     <nav class="navbar">
-        <ul>
+        <div class="logo">ResearchHub</div>
+        <ul class="nav-links">
             <li><a href="/">Home</a></li>
             <li><a href="#">About</a></li>
             <li><a href="/publications.html">Publications</a></li>
             <li><a href="/contact.html">Contact</a></li>
-            <li><a href="/signup.html" class="nav-btn">Sign Up</a></li>
-            <li><a href="/login.html" class="nav-btn">Login</a></li>
         </ul>
+        <div class="nav-buttons">
+            <a href="/signup.html" class="btn">Sign Up</a>
+            <a href="/login.html" class="btn btn-secondary">Login</a>
+        </div>
     </nav>
     <section class="signup-section">
+        <div class="shape"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+
         <div class="signup-content">
             <h1>Create Your Account to Access Research Papers.</h1>
-            <form class="signup-form">
+            <form class="signup-form" action="/auth/signup" method="POST">
                 <div class="name-fields">
                     <div class="field">
                         <label for="first-name">First Name</label>
-                        <input type="text" id="first-name" name="first-name" required>
+                        <input type="text" id="first-name" name="firstName" required>
                     </div>
                     <div class="field">
                         <label for="last-name">Last Name</label>
-                        <input type="text" id="last-name" name="last-name" required>
+                        <input type="text" id="last-name" name="lastName" required>
                     </div>
                 </div>
                 <label for="email">Email *</label>
@@ -40,9 +47,31 @@
                 <label for="confirm-password">Confirm Password *</label>
                 <input type="password" id="confirm-password" name="confirm-password" placeholder="Add answer here" required>
                 
+                <label for="role">Role *</label>
+                <select id="role" name="role" required>
+                    <option value="" disabled selected>Select Role</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="student">Student</option>
+                </select>
+                
+                <label for="department">Department *</label>
+                <input type="text" id="department" name="department" required>
+                
                 <button type="submit" class="signup-btn">Sign Up</button>
             </form>
         </div>
     </section>
+    <script>
+        // Client-side validation for Confirm Password
+        document.querySelector('.signup-form').addEventListener('submit', function (e) {
+            const password = document.querySelector('#password').value;
+            const confirmPassword = document.querySelector('#confirm-password').value;
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+            }
+        });
+    </script>
+    <script src="js/animation.js"></script>
 </body>
 </html>

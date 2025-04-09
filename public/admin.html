@@ -3,22 +3,508 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Upload Publications</title>
+    <title>Admin Dashboard - ResearchHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace; /* Monospace font for a professional, terminal-like feel */
+        }
+
+        body {
+            background-color: #1e1e1e; /* Dark background for a professional look */
+            color: #d4d4d4; /* Light gray text for readability */
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .navbar {
+            background: #2d2d2d; /* Solid dark gray navbar */
+            padding: 10px 20px;
+            border-bottom: 1px solid #3c3c3c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .navbar .logo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d4d4d4;
+            text-decoration: none;
+        }
+
+        .navbar .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar .nav-links li a {
+            color: #9cdcfe; /* Blue-gray for links */
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .navbar .nav-links li a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar .nav-buttons .btn {
+            color: #9cdcfe;
+            font-weight: normal;
+            border: 1px solid #9cdcfe;
+            padding: 5px 10px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .navbar .nav-buttons .btn:hover {
+            color: #ffffff;
+            background-color: #005566;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #252526; /* Slightly lighter background for content */
+            border: 1px solid #3c3c3c;
+        }
+
+        .dashboard h1 {
+            color: #d4d4d4;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #d4d4d4;
+            font-size: 18px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #3c3c3c;
+            padding-bottom: 5px;
+        }
+
+        .upload-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .upload-form input[type="file"] {
+            padding: 5px;
+            border: 1px solid #3c3c3c;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-size: 14px;
+        }
+
+        .upload-form input[type="file"]:focus {
+            border-color: #9cdcfe;
+            outline: none;
+        }
+
+        .upload-form button {
+            padding: 5px 10px;
+            background: #0e639c; /* Subdued blue for buttons */
+            color: #d4d4d4;
+            border: 1px solid #0e639c;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .upload-form button:hover {
+            background: #0a4d78;
+        }
+
+        .upload-form button:disabled {
+            background: #4a4a4a;
+            cursor: not-allowed;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #252526;
+        }
+
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #3c3c3c;
+            font-size: 14px;
+        }
+
+        table th {
+            background: #2d2d2d;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table tr:hover {
+            background: #2e2e2e;
+        }
+
+        table td a {
+            color: #9cdcfe;
+            text-decoration: none;
+        }
+
+        table td a:hover {
+            text-decoration: underline;
+        }
+
+        .delete-btn {
+            padding: 5px 10px;
+            background: #cd3131; /* Red for delete */
+            color: #d4d4d4;
+            border: 1px solid #cd3131;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .delete-btn:hover:not(:disabled) {
+            background: #a12626;
+        }
+
+        .delete-btn:disabled {
+            background: #4a4a4a;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            width: 12px;
+            height: 12px;
+            border: 2px solid #d4d4d4;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #f44747;
+            font-size: 14px;
+            margin-top: 5px;
+            padding: 5px;
+            background: #2d2d2d;
+            border: 1px solid #3c3c3c;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .navbar .nav-links {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .upload-form {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .upload-form input[type="file"],
+            .upload-form button {
+                width: 100%;
+            }
+
+            table th, table td {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .delete-btn {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Upload Publications</h1>
-    <form action="/admin/upload-publications" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".xlsx, .xls" required />
-        <input type="hidden" name="_csrf" id="csrfToken">
-        <button type="submit">Upload</button>
-    </form>
+    <nav class="navbar">
+        <div class="logo">ResearchHub Admin</div>
+        <ul class="nav-links">
+            <li><a href="/publications.html">Publications</a></li>
+        </ul>
+        <div class="nav-buttons">
+            <a href="/auth/logout" class="btn">Logout</a>
+        </div>
+    </nav>
+
+    <div class="dashboard">
+        <h1>Admin Dashboard</h1>
+
+        <!-- Upload Publications Section -->
+        <div class="section">
+            <h2>Upload Publications</h2>
+            <form id="upload-form" action="/admin/upload-publications" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".xlsx, .xls" required />
+                <input type="hidden" name="_csrf" id="csrfToken">
+                <button type="submit">Upload</button>
+            </form>
+            <div id="upload-message"></div>
+        </div>
+
+        <!-- Manage Users Section -->
+        <div class="section">
+            <h2>Manage Users</h2>
+            <div class="table-container">
+                <table id="users-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="users-message"></div>
+        </div>
+
+        <!-- View Papers Section -->
+        <div class="section">
+            <h2>Submitted Papers</h2>
+            <div class="table-container">
+                <table id="papers-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>URL</th>
+                            <th>Date</th>
+                            <th>Teacher ID</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="papers-message"></div>
+        </div>
+    </div>
+
     <script>
-        // Fetch CSRF token dynamically
+        // Fetch CSRF token
         fetch('/get-csrf-token')
             .then(res => res.json())
             .then(data => {
                 document.getElementById('csrfToken').value = data.csrfToken;
+            })
+            .catch(err => {
+                console.error('Error fetching CSRF token:', err);
+                document.getElementById('upload-message').innerHTML = '<p class="error-message">Error fetching CSRF token.</p>';
             });
+
+        // Handle form submission for uploading publications
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const uploadBtn = e.target.querySelector('button');
+            const spinner = document.createElement('span');
+            spinner.className = 'loading-spinner';
+            uploadBtn.disabled = true;
+            uploadBtn.appendChild(spinner);
+            const formData = new FormData(e.target);
+            try {
+                const response = await fetch('/admin/upload-publications', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('upload-message').innerHTML = '<p class="success-message">Publications uploaded successfully!</p>';
+                } else {
+                    document.getElementById('upload-message').innerHTML = `<p class="error-message">${data.message || 'Error uploading publications.'}</p>`;
+                }
+            } catch (err) {
+                document.getElementById('upload-message').innerHTML = '<p class="error-message">Error uploading publications.</p>';
+                console.error('Error:', err);
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.removeChild(spinner);
+            }
+        });
+
+        // Fetch all users
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/admin/users', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch users');
+                }
+                const data = await response.json();
+                displayUsers(data);
+            } catch (err) {
+                document.getElementById('users-message').innerHTML = '<p class="error-message">Error fetching users.</p>';
+                console.error('Error fetching users:', err);
+            }
+        }
+
+        function displayUsers(users) {
+            const tbody = document.querySelector('#users-table tbody');
+            tbody.innerHTML = '';
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7">No users found.</td></tr>';
+                return;
+            }
+            users.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.firstName}</td>
+                    <td>${user.lastName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td>${user.department}</td>
+                    <td><button class="delete-btn" onclick="deleteUser(${user.id})">Delete</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Delete User
+        async function deleteUser(userId) {
+            if (!confirm('Are you sure you want to delete this user?')) return;
+            const deleteBtn = document.querySelector(`button[onclick="deleteUser(${userId})"]`);
+            const spinner = document.createElement('span');
+            spinner.className = 'loading-spinner';
+            deleteBtn.disabled = true;
+            deleteBtn.appendChild(spinner);
+            try {
+                const response = await fetch(`/admin/users/${userId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to delete user');
+                }
+                document.getElementById('users-message').innerHTML = '<p class="success-message">User deleted successfully!</p>';
+                fetchUsers();
+            } catch (err) {
+                document.getElementById('users-message').innerHTML = '<p class="error-message">Error deleting user.</p>';
+                console.error('Error deleting user:', err);
+            } finally {
+                deleteBtn.disabled = false;
+                deleteBtn.removeChild(spinner);
+            }
+        }
+
+        async function fetchPublications() {
+            try {
+                const response = await fetch('/admin/publications', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch publications');
+                }
+                const data = await response.json();
+                displayPublications(data);
+            } catch (err) {
+                document.getElementById('papers-message').innerHTML = '<p class="error-message">Error fetching publications.</p>';
+                console.error('Error fetching publications:', err);
+            }
+        }
+
+        function displayPublications(publications) {
+            const tbody = document.querySelector('#papers-table tbody');
+            tbody.innerHTML = '';
+            if (publications.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6">No publications found.</td></tr>';
+                return;
+            }
+            publications.forEach(pub => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${pub.id}</td>
+                    <td>${pub.title}</td>
+                    <td>
+                        ${pub.url ? `<a href="${pub.url.startsWith('http') ? pub.url : 'https://doi.org/' + pub.url}" target="_blank">View</a>` : 'N/A'}
+                    </td>
+                    <td>${pub.date}</td>
+                    <td>${pub.teacherId} (${pub.teacher_first_name} ${pub.teacher_last_name})</td>
+                    <td><button class="delete-btn" onclick="deletePublication(${pub.id})">Delete</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function deletePublication(publicationId) {
+            if (!confirm('Are you sure you want to delete this publication?')) return;
+            const deleteBtn = document.querySelector(`button[onclick="deletePublication(${publicationId})"]`);
+            const spinner = document.createElement('span');
+            spinner.className = 'loading-spinner';
+            deleteBtn.disabled = true;
+            deleteBtn.appendChild(spinner);
+            try {
+                const response = await fetch(`/admin/publications/${publicationId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to delete publication');
+                }
+                deleteBtn.textContent = 'Deleted';
+                setTimeout(() => {
+                    fetchPublications();
+                }, 1000);
+            } catch (err) {
+                console.error('Error deleting publication:', err);
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.disabled = false;
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.textContent = err.message || 'Failed to delete publication';
+                deleteBtn.parentNode.appendChild(errorMessage);
+                setTimeout(() => {
+                    errorMessage.remove();
+                }, 3000);
+            } finally {
+                deleteBtn.removeChild(spinner);
+            }
+        }
+
+        fetchUsers();
+        fetchPublications();
     </script>
 </body>
 </html>

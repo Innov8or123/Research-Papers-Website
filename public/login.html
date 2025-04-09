@@ -8,34 +8,105 @@
 </head>
 <body>
     <nav class="navbar">
-        <ul>
+        <div class="logo">ResearchHub</div>
+        <ul class="nav-links">
             <li><a href="/">Home</a></li>
             <li><a href="#">About</a></li>
             <li><a href="/publications.html">Publications</a></li>
             <li><a href="/contact.html">Contact</a></li>
-            <li><a href="/signup.html" class="nav-btn">Sign Up</a></li>
-            <li><a href="/login.html" class="nav-btn">Login</a></li>
         </ul>
+        <div class="nav-buttons">
+            <a href="/signup.html" class="btn">Sign Up</a>
+            <a href="/login.html" class="btn btn-secondary">Login</a>
+        </div>
     </nav>
 
     <section class="login-section">
+        <div class="shape"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
         <div class="login-content">
             <h1>Welcome Back! Log in to Access Research Papers & Save Your Work.</h1>
             <p>We’d love to hear from you! Whether you’re a researcher looking to share your work, a student in need of academic resources, or just exploring, feel free to contact us with any questions or feedback.</p>
-            <form class="login-form">
+            <form class="login-form" action="/auth/login" method="POST">
                 <label for="email">Email *</label>
                 <input type="email" id="email" name="email" required>
                 
-                <label for="password">Password</label>
+                <label for="password">Password *</label>
                 <input type="password" id="password" name="password" placeholder="Add answer here" required>
                 
                 <button type="submit" class="login-btn">Login</button>
             </form>
             <div class="login-links">
-                <p><a href="#">Forgot password?</a></p>
-                <p>don't have an account? <a href="/signup.html">Sign Up</a></p>
+                <p><a href="#" id="forgot-password-link">Forgot password?</a></p>
+                <p>Don't have an account? <a href="/signup.html">Sign Up</a></p>
             </div>
+
+            <!-- Forgot Password Form (Hidden by Default) -->
+            <form class="forgot-password-form" id="forgot-password-form" style="display: none;">
+                <label for="forgot-email">Enter your email to reset password *</label>
+                <input type="email" id="forgot-email" name="email" required>
+                <div class="button-container">
+                    <button type="submit" class="forgot-password-btn">Send Reset Link</button>
+                    <div class="loading-spinner" style="display: none;"></div>
+                </div>
+                <button type="button" id="back-to-login" class="back-btn">Back to Login</button>
+            </form>
         </div>
     </section>
+    <script>
+        // Toggle between login and forgot password forms
+        document.getElementById('forgot-password-link').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector('.login-form').style.display = 'none';
+            document.querySelector('.login-links').style.display = 'none';
+            document.getElementById('forgot-password-form').style.display = 'block';
+        });
+
+        document.getElementById('back-to-login').addEventListener('click', function () {
+            document.querySelector('.login-form').style.display = 'block';
+            document.querySelector('.login-links').style.display = 'block';
+            document.getElementById('forgot-password-form').style.display = 'none';
+        });
+
+        // Handle forgot password form submission with loading state and spinner
+        document.getElementById('forgot-password-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('forgot-email').value;
+            const submitBtn = document.querySelector('.forgot-password-btn');
+            const spinner = document.querySelector('.loading-spinner');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            spinner.style.display = 'inline-block';
+
+            try {
+                const response = await fetch('/auth/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email }),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    alert('A password reset link has been sent to your email.');
+                    document.getElementById('forgot-password-form').reset();
+                    document.querySelector('.login-form').style.display = 'block';
+                    document.querySelector('.login-links').style.display = 'block';
+                    document.getElementById('forgot-password-form').style.display = 'none';
+                } else {
+                    alert(result.message || 'Failed to send reset link.');
+                }
+            } catch (error) {
+                console.error('Error sending reset link:', error);
+                alert('An error occurred while sending the reset link.');
+            } finally {
+                // Revert loading state
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Reset Link';
+                spinner.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

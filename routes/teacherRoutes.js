@@ -1,25 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const teacherController = require('../controllers/teacherController');
-const authMiddleware = require('../middleware/authMiddleware'); 
+const teacherController = require('../controllers/teacherController'); 
+const { ensureAuthenticated, ensureRole } = require('../middleware/authMiddleware');
+
+router.post(
+    '/submit-publication',
+    ensureAuthenticated,
+    ensureRole(['teacher']),
+    teacherController.submitPublication
+);
 
 router.get(
-    '/papers',
-     authMiddleware.ensureAuthenticated,
-     authMiddleware.ensureRole(['teacher', 'admin']),
-     teacherController.getSubmittedPapers
-    );
-router.post(
-    '/submit-link',
-     authMiddleware.ensureAuthenticated,
-     authMiddleware.ensureRole(['teacher', 'admin']),
-     teacherController.submitPaper
-    );
-router.get(
-    '/profile',
-     authMiddleware.ensureAuthenticated,
-     authMiddleware.ensureRole(['teacher', 'admin']),
-     teacherController.getProfile
-    );
+    '/publications',
+    ensureAuthenticated,
+    ensureRole(['teacher']),
+    teacherController.getSubmittedPublications
+);
 
 module.exports = router;

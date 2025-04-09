@@ -1,61 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Teacher Profile - Research Papers Platform</title>
-        <link rel="stylesheet" href="css/styles.css" />
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - Research Papers Platform</title>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">ResearchHub</div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="/publications.html">Publications</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-buttons" id="nav-buttons"></div>
+    </nav>
 
-        <nav class="navbar">
-            <ul class="nav-list">
-                <li class="nav-item"><a href="/">Home</a></li>
-                <li class="nav-item"><a href="#">About</a></li>
-                <li class="nav-item"><a href="/publications.html">Publications</a></li>
-                <li class="nav-item"><a href="/contact.html">Contact</a></li>
-                <li class="nav-item"><a href="/signup.html" class="nav-btn signup-link">Sign Up</a></li>
-                <li class="nav-item"><a href="/login.html" class="nav-btn login-link">Login</a></li>
-                <li class="nav-item"><a href="#" class="nav-btn logout-link" style="display: none;">Logout</a></li>
-            </ul>
-        </nav>
+    <main class="profile-page">
+        <header class="profile-header">
+            <h1 class="profile-title">Your Profile</h1>
+        </header>
 
-        <main class="profile-page">
-            <header class="profile-header">
-                <h1 class="profile-title">Teacher Profile</h1>
-            </header>
+        <section class="profile-container">
+            <div class="profile-info">
+                <h2 class="profile-name"></h2>
+                <p class="profile-role"></p>
+                <p class="profile-email">Email: <a href="#" class="profile-email-link"></a></p>
+                <p class="profile-department"></p>
+            </div>
 
-            <section class="profile-container">
-                <!-- Profile Details -->
-                <div class="profile-info">
-                    <h2 class="profile-name"></h2>
-                    <p class="profile-role"></p>
-                    <p class="profile-email">Email: <a href="#" class="profile-email-link"></a></p>
-                </div>
+            <!-- Submit Publication Form (Only for Teachers) -->
+            <div class="upload-container" id="upload-container" style="display: none;">
+                <h3 class="upload-title">Submit a New Publication</h3>
+                <form class="upload-form" id="upload-form" aria-label="Submit Publication">
+                    <!-- Publication Title -->
+                    <div class="form-group">
+                        <label for="paper-title">Publication Title <span class="required">*</span></label>
+                        <input type="text" id="paper-title" name="paper-title" required aria-required="true" />
+                    </div>
+                    
+                    <!-- Type of Paper -->
+                    <div class="form-group">
+                        <label for="type">Type Of Paper <span class="required">*</span></label>
+                        <select id="type" name="type" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="faculty_publication_journal">Faculty Publication - Journal</option>
+                            <option value="faculty_publication_conference">Faculty Publication - Conference</option>
+                            <option value="book_chapter_publication">Book Chapter Publication</option>
+                            <option value="research_proposal">Research Proposal</option>
+                            <option value="student_publication">Student Publication</option>
+                        </select>
+                    </div>                    
+                    
+                    <!-- Conference/Journal Name -->
+                    <div class="form-group">
+                        <label for="journal-name">Conference or Journal Name <span class="required">*</span></label>
+                        <input type="text" id="journal-name" name="journal-name" required aria-required="true" />
+                    </div>
+                    
+                    <!-- ISBN or ISSN -->
+                    <div class="form-group">
+                        <label for="isbn">ISSN or ISBN Number</label>
+                        <input type="text" id="isbn" name="isbn" />
+                    </div>
+                    
+                    <!-- Author Type -->
+                    <div class="form-group">
+                        <label for="author-type">Author Type <span class="required">*</span></label>
+                        <select id="author-type" name="author-type" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="principal_author">Principal Author</option>
+                            <option value="co_author">Co-Author</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Publication URL -->
+                    <div class="form-group">
+                        <label for="paper-link">Publication URL <span class="required">*</span></label>
+                        <input type="url" id="paper-link" name="paper-link" placeholder="https://example.com/paper.pdf" required aria-required="true" />
+                    </div>
+                    
+                    <!-- Publication Date -->
+                    <div class="form-group">
+                        <label for="paper-date">Publication Date <span class="required">*</span></label>
+                        <input type="date" id="paper-date" name="paper-date" required aria-required="true" />
+                    </div>
+                    
+                    <!-- Publisher Name -->
+                    <div class="form-group">
+                        <label for="publisher">Publisher Name <span class="required">*</span></label>
+                        <input type="text" id="publisher" name="publisher" required aria-required="true" />
+                    </div>
 
-                <!-- Submit Link Form -->
-                <div class="upload-container">
-                    <h3 class="upload-title">Submit a New Paper Link</h3>
-                    <form class="upload-form" aria-label="Submit Research Paper Link">
-                        <div class="form-group">
-                            <label for="paper-title">Paper Title <span class="required">*</span></label>
-                            <input type="text" id="paper-title" name="paper-title" required aria-required="true" />
-                        </div>
-                        <div class="form-group">
-                            <label for="paper-link">Paper URL <span class="required">*</span></label>
-                            <input type="url" id="paper-link" name="paper-link" placeholder="https://example.com/paper.pdf" required aria-required="true" />
-                        </div>
-                        <button type="submit" class="upload-btn">Submit</button>
-                    </form>
-                </div>
+                    <!-- Faculty Name -->
+                    <div class="form-group">
+                        <label for="faculty-name">Faculty Name </label>
+                        <input type="text" id="faculty-name" name="faculty-name" required aria-required="true" />
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" class="upload-btn">Submit</button>
+                </form>
+            </div>
+            
 
-                <!-- Papers List -->
-                <div class="papers-container">
-                    <h3 class="papers-title">Submitted Paper Links</h3>
-                    <ul class="papers-list" aria-label="List of Submitted Paper Links"></ul>
-                </div>
-            </section>
-        </main>
-        <script src="js/main.js"></script>
-    </body>
+            <!-- Publications List (Only for Teachers) -->
+            <div class="papers-container" id="papers-container" style="display: none;">
+                <h3 class="papers-title">Submitted Publications</h3>
+                <ul class="papers-list" id="papers-list" aria-label="List of Submitted Publications"></ul>
+            </div>
+        </section>
+    </main>
+    <script>
+        // Check authentication status and update navbar
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/profile');
+                const navButtons = document.getElementById('nav-buttons');
+                if (response.ok) {
+                    navButtons.innerHTML = `
+                        <a href="/profile.html" class="btn">Profile</a>
+                        <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                    `;
+                    return true;
+                } else {
+                    navButtons.innerHTML = `
+                        <a href="/signup.html" class="btn">Sign Up</a>
+                        <a href="/login.html" class="btn btn-secondary">Login</a>
+                    `;
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+                document.getElementById('nav-buttons').innerHTML = `
+                    <a href="/signup.html" class="btn">Sign Up</a>
+                    <a href="/login.html" class="btn btn-secondary">Login</a>
+                `;
+                return false;
+            }
+        }
+
+        // Fetch and display profile data
+        async function fetchProfile() {
+            try {
+                const response = await fetch('/profile');
+                if (!response.ok) {
+                    window.location.href = '/login.html';
+                    return;
+                }
+                const user = await response.json();
+                document.querySelector('.profile-name').textContent = `${user.firstName} ${user.lastName}`;
+                document.querySelector('.profile-role').textContent = `Role: ${user.role}`;
+                document.querySelector('.profile-email-link').textContent = user.email;
+                document.querySelector('.profile-email-link').href = `mailto:${user.email}`;
+                document.querySelector('.profile-department').textContent = `Department: ${user.department}`;
+
+                if (user.role === 'teacher') {
+                    document.getElementById('upload-container').style.display = 'block';
+                    document.getElementById('papers-container').style.display = 'block';
+                    fetchTeacherPublications();
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Fetch and display teacher's submitted publications
+        async function fetchTeacherPublications() {
+            try {
+                const response = await fetch('/teachers/publications');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch publications');
+                }
+                const publications = await response.json();
+                const papersList = document.getElementById('papers-list');
+                papersList.innerHTML = '';
+
+                if (publications.length === 0) {  
+                    papersList.innerHTML = '<li>No publications submitted yet.</li>';
+                    return;
+                }
+        
+                publications.forEach(pub => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <a href="${pub.doi || '#'}" target="_blank">${pub.title}</a>
+                        <p>Year: ${pub.year_of_publication}</p>  
+                    `;
+                    papersList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error fetching publications:', error);
+                document.getElementById('papers-list').innerHTML = '<li>Error loading publications.</li>';
+            }
+        }
+
+        // Handle form submission for new publication
+        document.getElementById('upload-form')?.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const formData = {
+                title: document.getElementById('paper-title').value,
+                url: document.getElementById('paper-link').value,
+                date: document.getElementById('paper-date').value,
+                type: document.getElementById('type').value,
+                journalName: document.getElementById('journal-name').value,
+                isbn: document.getElementById('isbn').value,
+                authorType: document.getElementById('author-type').value,
+                publisher: document.getElementById('publisher').value,
+                faculty: document.getElementById('faculty-name').value
+            };
+
+            try {
+                const response = await fetch('/teachers/submit-publication', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    credentials: 'include', 
+                    body: JSON.stringify(formData),
+                });
+            
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to submit publication');
+                }
+
+                const result = await response.json();
+                alert('Publication submitted successfully!');
+                document.getElementById('upload-form').reset();
+                fetchTeacherPublications();
+            } catch (error) {
+                console.error('Error submitting publication:', error);
+                alert(error.message || 'An error occurred while submitting the publication');
+            }
+        });
+
+        checkAuthStatus().then(isLoggedIn => {
+            if (isLoggedIn) {
+                fetchProfile();
+            } else {
+                window.location.href = '/login.html';
+            }
+        });
+    </script>
+    <script src="js/main.js"></script>
+</body>
 </html>
