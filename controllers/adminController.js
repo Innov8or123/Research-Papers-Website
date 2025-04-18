@@ -6,7 +6,12 @@ const catchAsync = require('../utils/catchAsync');
 const getAllUsers = catchAsync(async (req, res, next) => {
     try {
         const [users] = await pool.query('SELECT * FROM users');
-        res.status(200).json(users);
+        res.status(200).json({
+            status: 'success',
+            data: {
+                users
+            }
+        });
     } catch (error) {
         return next(new AppError(error.message, 500));
     }
@@ -45,7 +50,12 @@ const getAllPublications = catchAsync(async (req, res, next) => {
             JOIN users u ON p.author_id = u.id
             ORDER BY p.created_at DESC
         `);
-        res.status(200).json(publications);
+        res.status(200).json({
+            status: 'success',
+            data: {
+                publications
+            }
+        });
     } catch (error) {
         return next(new AppError(error.message, 500));
     }

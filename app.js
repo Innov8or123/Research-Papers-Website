@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const dotenv = require('dotenv');
 const fileUpload = require('express-fileupload');
 const multer = require('multer');
+const cors = require('cors');
 
 dotenv.config();
 
@@ -18,7 +19,8 @@ const authRouter = require('./routes/authRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const userModel = require('./models/userModel'); 
 const { ensureAuthenticated } = require('./middleware/authMiddleware');
-const { validateCsrfToken } = require('./middleware/csrfMiddleware')
+const { validateCsrfToken } = require('./middleware/csrfMiddleware');
+// const { error } = require('console');
 
 const app = express();
 
@@ -43,6 +45,11 @@ app.use('/admin/upload-publications', (req, res, next) => {
 //     req.on('end', () => console.log('Request ended'));
 //     next();
 //   });
+
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true 
+}));
 
 // Database Connection
 const pool = mysql.createPool({
@@ -161,7 +168,7 @@ app.get('/publications', ensureAuthenticated, async (req, res, next) => {
             }
         });
     } catch (err) {
-        console.error('Error fetching publications:', err); // Log the full error
+        console.error('Error fetching publications:', err); 
         return next(new AppError(`Failed to fetch publications: ${err.message}`, 500));
     }
 });
@@ -207,19 +214,101 @@ app.post('/contact', validateCsrfToken, async (req, res, next) => {
     }
 });
 
-// Global Error Handling Middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    const status = err.statusCode || 500;
-    res.status(status).json({
-        message: err.message || 'Something went wrong!',
-        status: 'error',
-    });
+app.post('/auth/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+      if (err) {
+          return next(new AppError(err.message, 500));
+      }
+      if (!user) {
+          return res.status(401).json({ message: info.message || 'Invalid credentials' });
+      }
+      req.logIn(user, (err) => {
+          if (err) {
+              return next(new AppError(err.message, 500));
+          }
+          return res.status(200).json({ message: 'Login successful', redirect: '/profile.html' });
+      });
+  })(req, res, next);
 });
 
-// 404 Handler
+app.post('/auth/signup', async (req, res, next) => {
+  try {
+    // 1. Check if passwords match
+    if (req.body.password !== req.body.confirmPassword) {
+      return res.status(400).json({ message: 'Passwords do not match' });
+    }
+
+    // 2. Check if user already exists
+    const existingUser = await User.findOne({ email: req.body.email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already in use' });
+    }
+
+    // 3. Create new user
+    const newUser = await User.create({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      password: req.body.password, 
+      role: req.body.role,
+      department: req.body.department
+    });
+
+    // 4. log in new user
+    req.login(newUser, (err) => {
+      if (err) {
+        return next(new AppError(err.message, 500));
+      }
+      return res.status(201).json({ 
+        message: 'Signup successful', 
+        redirect: '/publications.html' 
+      });
+    });
+
+  } catch (err) {
+    return next(new AppError(err.message, 500));
+  }
+});
+
+// Global Error Handling Middleware
+
+// app.use((err, req, res, next) => {
+//     console.error(err.stack);
+//     const status = err.statusCode || 500;
+//     res.status(status).json({
+//         message: err.message || 'Something went wrong!',
+//         status: 'error',
+//     });
+// });
+
+// // 404 Handler
+// 1)
+// app.use((req, res, next) => {
+//     res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
+// });
+
+// 2)
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+//3)
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Something went wrong!';
+    //website ? HTML : json
+    const acceptsHTML = req.accepts(['html', 'json']) === 'html';
+    //a. if client acc html
+    if (acceptsHTML || !req.path.startsWith('/')) {
+        res.status(statusCode).sendFile(path.join(__dirname, 'public', statusCode === 404 ? '404.html' : '500.html'));
+    } else {
+        // b.if client accepts json 
+        res.status(statusCode).json({
+            message,
+            status: `${statusCode}`.startsWith('4') ? 'fail' : 'error',
+        });
+    }
 });
 
 module.exports = app;

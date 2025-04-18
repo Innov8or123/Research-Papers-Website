@@ -41,7 +41,8 @@ filterBySearch() {
       this.query += ` WHERE title LIKE '%${searchTerm}%' 
                      OR conference_or_journal_name LIKE '%${searchTerm}%' 
                      OR publisher_name LIKE '%${searchTerm}%'
-                     OR faculty_name LIKE '%${searchTerm}%'`;
+                     OR faculty_name LIKE '%${searchTerm}%'
+                     OR type_of_paper LIKE '%${searchTerm}'`;
   }
   return this;
 }

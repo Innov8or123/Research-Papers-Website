@@ -2,25 +2,64 @@ class AuthService {
     static async checkAuthStatus() {
         try {
             const response = await fetch('/profile');
-            const elements = {
-                signup: document.querySelector('.signup-link'),
-                login: document.querySelector('.login-link'),
-                logout: document.querySelector('.logout-link')
-            };
+            const navButtons = document.querySelector('.nav-buttons');
+            if (!navButtons) return false;
 
-            const isAuthenticated = response.ok;
-            this.toggleAuthLinks(elements, isAuthenticated);
-            return isAuthenticated;
+            if (response.ok) {
+                const data = await response.json();
+                const role = data.role;
+
+                if (role === 'admin') {
+                    navButtons.innerHTML = `
+                        <a href="/admin.html" class="btn">Admin Dashboard</a>
+                        <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                    `;
+                } else {
+                    navButtons.innerHTML = `
+                        <a href="/profile.html" class="btn">Profile</a>
+                        <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                    `;
+                }
+                return true;
+            } else {
+                navButtons.innerHTML = `
+                    <a href="/signup.html" class="btn">Sign Up</a>
+                    <a href="/login.html" class="btn btn-secondary">Login</a>
+                `;
+                return false;
+            }
         } catch (error) {
             console.error('Auth check failed:', error);
+            const navButtons = document.querySelector('.nav-buttons');
+            if (navButtons) {
+                navButtons.innerHTML = `
+                    <a href="/signup.html" class="btn">Sign Up</a>
+                    <a href="/login.html" class="btn btn-secondary">Login</a>
+                `;
+            }
             return false;
         }
     }
 
-    static toggleAuthLinks(elements, isAuthenticated) {
+    static toggleAuthLinks(elements, isAuthenticated, role = null) {
+        if (!elements.signup || !elements.login || !elements.profile || !elements.logout) {
+            console.warn('One or more navigation elements not found:', elements);
+            return;
+        }
+
         elements.signup.style.display = isAuthenticated ? 'none' : 'inline';
         elements.login.style.display = isAuthenticated ? 'none' : 'inline';
+        elements.profile.style.display = isAuthenticated && role !== 'admin' ? 'inline' : 'none';
         elements.logout.style.display = isAuthenticated ? 'inline' : 'none';
+
+        if (isAuthenticated && role === 'admin') {
+            elements.profile.href = '/admin.html';
+            elements.profile.textContent = 'Admin Dashboard';
+            elements.profile.style.display = 'inline';
+        } else if (isAuthenticated) {
+            elements.profile.href = '/profile.html';
+            elements.profile.textContent = 'Profile';
+        }
     }
 
     static async logout() {
@@ -286,9 +325,20 @@ class FormHandler {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    AuthService.checkAuthStatus();
+    if (!window.location.pathname.includes('about.html') && 
+        !window.location.pathname.includes('contact.html') && 
+        !window.location.pathname.includes('login.html') && 
+        !window.location.pathname.includes('signup.html')) {
+        AuthService.checkAuthStatus();
+    }
+    
     ProfileService.fetchProfile();
-    if (!window.location.pathname.includes('profile.html')) {
+
+    if (!window.location.pathname.includes('profile.html') && 
+        !window.location.pathname.includes('about.html') && 
+        !window.location.pathname.includes('contact.html') && 
+        !window.location.pathname.includes('login.html') && 
+        !window.location.pathname.includes('signup.html')) {
         PaperService.fetchPapers(); 
     }
     FormHandler.init();

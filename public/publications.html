@@ -11,7 +11,7 @@
         <div class="logo">ResearchHub</div>
         <ul class="nav-links">
             <li><a href="/">Home</a></li>
-            <li><a href="#">About</a></li>
+            <li><a href="/about.html">About</a></li>
             <li><a href="/publications.html">Publications</a></li>
             <li><a href="/contact.html">Contact</a></li>
         </ul>
@@ -51,17 +51,34 @@
         let currentPage = 1;
         let totalPages = 1;
         let allPublications = [];
-        const itemsPerPage = 10; 
+        let itemsPerPage = 10; 
+        function changeItemsPerPage(value) {
+            itemsPerPage = parseInt(value);
+            fetchPublications(1); 
+        }
         let user = null;
         async function checkAuthStatus() {
             try {
-                const response = await fetch('/profile');
-                const navButtons = document.getElementById('nav-buttons');
-                if (response.ok) {
-                    navButtons.innerHTML = `
-                        <a href="/profile.html" class="btn">Profile</a>
-                        <a href="/auth/logout" class="btn btn-secondary">Logout</a>
-                    `;
+                const response = await fetch('/profile', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const navButtons = document.querySelector('.nav-buttons');
+                    if (response.ok) {
+                        const data = await response.json();
+                        const role = data.role;
+
+                    if (role === 'admin') {
+                        navButtons.innerHTML = `
+                            <a href="/admin.html" class="btn">Admin Dashboard</a>
+                            <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                        `;
+                    } else {
+                        navButtons.innerHTML = `
+                            <a href="/profile.html" class="btn">Profile</a>
+                            <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                        `;
+                    }
                 } else {
                     navButtons.innerHTML = `
                         <a href="/signup.html" class="btn">Sign Up</a>
@@ -70,7 +87,7 @@
                 }
             } catch (error) {
                 console.error('Error checking auth status:', error);
-                document.getElementById('nav-buttons').innerHTML = `
+                document.querySelector('.nav-buttons').innerHTML = `
                     <a href="/signup.html" class="btn">Sign Up</a>
                     <a href="/login.html" class="btn btn-secondary">Login</a>
                 `;
@@ -125,11 +142,13 @@
             } catch (error) {
                 console.error('Fetch error:', error);
                 grid.innerHTML = `
-                    <div class="error-message">
-                        <p>${error.message.includes('Unexpected token') 
-                            ? 'Invalid server response' 
-                            : error.message}</p>
-                        <button onclick="fetchPublications()">Retry</button>
+                    <div class="error-container">
+                        <div class="error-message error-overlay">
+                            <p>${error.message.includes('Unexpected token') 
+                                ? 'Invalid server response' 
+                                : error.message}</p>
+                            <button onclick="fetchPublications()">Retry</button>
+                        </div>
                     </div>
                 `;
             }
@@ -241,20 +260,20 @@
             }
         }
 
-        // Update the search form event listener
+        // the search event listener
         document.getElementById('search-form').addEventListener('submit', function (e) {
             e.preventDefault();
             currentSearchTerm = document.getElementById('search').value.toLowerCase();
             fetchPublications(1);
         });
 
-        // Add input event listener for autocomplete
+        // input event listener for autocomplete
         document.getElementById('search').addEventListener('input', function (e) {
             const searchTerm = e.target.value.trim();
             showSuggestions(searchTerm);
         });
 
-        // Hide dropdown when clicking outside
+        // Hide dropdown if clicked outside
         document.addEventListener('click', function (e) {
             const dropdown = document.getElementById('suggestions-dropdown');
             if (!dropdown.contains(e.target) && e.target.id !== 'search') {

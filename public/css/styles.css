@@ -75,7 +75,6 @@ body {
     text-decoration: none;
 }
 
-/* Responsive Design for Navbar */
 @media (max-width: 768px) {
     .navbar {
         padding: 15px 20px; 
@@ -279,7 +278,6 @@ body {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive Design for Vision Section */
 @media (max-width: 768px) {
     .vision-section {
         flex-direction: column;
@@ -350,7 +348,6 @@ body {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); 
 }
 
-/* Text on the Right */
 .knowledge-content {
     flex: 1; 
     max-width: 50%;
@@ -412,7 +409,6 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); 
 }
 
-/* Responsive Design for Knowledge Section */
 @media (max-width: 768px) {
     .knowledge-section {
         flex-direction: column;
@@ -745,189 +741,144 @@ body {
     }
 }
 
-/* Forgot Password Content */
-.forgot-password-content {
-    position: relative; 
-    z-index: 1; 
-    background: #ffffff; 
-    padding: 3rem;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    max-width: 600px; 
-    width: 100%; 
-    text-align: center;
-}
-
-.forgot-password-content h1 {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
-    transition: color 0.3s ease;
-}
-
-.forgot-password-content h1:hover {
-    color: #4a4a9d;
-}
-
-.forgot-password-content p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: #666;
-    margin-bottom: 2rem;
-    transition: color 0.3s ease;
-}
-
-.forgot-password-content p:hover {
-    color: #333; 
-}
-
 /* Forgot Password Form */
 .forgot-password-form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; 
+    gap: 1.5rem;
+    text-align: left;
 }
 
 .forgot-password-form label {
     display: block;
-    text-align: left;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #374151;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a4a9d;
     margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.forgot-password-form input {
+.forgot-password-form input[type="email"] {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    padding: 12px 16px;
     font-size: 1rem;
     color: #333;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.forgot-password-form input:focus {
-    border-color: #4a4a9d; 
-    box-shadow: 0 0 5px rgba(74, 74, 157, 0.3);
+.forgot-password-form input[type="email"]:focus {
+    border-color: #4a4a9d;
     outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 74, 157, 0.2);
 }
 
-.forgot-password-form .reset-btn {
-    padding: 1rem;
-    background: #4a4a9d; 
-    color: #fff;
+.forgot-password-form .input-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+.forgot-password-btn {
+    padding: 0.9rem;
+    background: #4a4a9d;
+    color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    width: 100%;
 }
 
-.forgot-password-form .reset-btn:hover {
-    background: #3b3a7d; 
-    transform: scale(1.02); 
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+.forgot-password-btn:hover {
+    background: #3a3a8d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 74, 157, 0.2);
 }
 
-/* Forgot Password Links */
-.forgot-password-links {
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-    color: #666;
-}
-
-.forgot-password-links p {
-    margin: 0.5rem 0;
-}
-
-.forgot-password-links a {
+.back-btn {
+    padding: 0.9rem;
+    background: white;
     color: #4a4a9d;
-    text-decoration: none;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border: 1px solid #e5e7eb;
+    border: 2px solid #4a4a9d;
     border-radius: 8px;
-    display: inline-block;
-    transition: background 0.3s ease, color 0.3s ease;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    width: 100%;
 }
 
-.forgot-password-links a:hover {
-    background: #4a4a9d;
-    color: #fff;
+.back-btn:hover {
+    background: #f0f4f8;
+    transform: translateY(-2px);
 }
 
-/* Responsive Design for Forgot Password Section */
+.button-container {
+    position: relative;
+}
+
+.loading-spinner {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Decorative Shapes */
+.shape {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(74, 74, 157, 0.1);
+    z-index: 0;
+}
+
+.shape-2 {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(243, 156, 18, 0.1);
+    z-index: 0;
+}
+
+.shape-3 {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(74, 74, 157, 0.05);
+    z-index: 0;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-    .forgot-password-section {
-        padding: 1.5rem;
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
     }
 
-    .forgot-password-content {
-        padding: 2rem;
-    }
-
-    .forgot-password-content h1 {
-        font-size: 2rem;
-    }
-
-    .forgot-password-content p {
-        font-size: 1rem;
-    }
-
-    .forgot-password-section .shape,
-    .forgot-password-section .shape-2,
-    .forgot-password-section .shape-3 {
-        width: 80px;
-        height: 80px;
-    }
-
-    .forgot-password-section .shape {
-        top: 5%;
-        left: 10%;
-    }
-
-    .forgot-password-section .shape-2 {
-        bottom: 10%;
-        right: 5%;
-    }
-
-    .forgot-password-section .shape-3 {
-        top: 60%;
-        left: 70%;
-    }
-}
-
-@media (max-width: 480px) {
-    .forgot-password-content h1 {
-        font-size: 1.5rem;
-    }
-
-    .forgot-password-content p {
-        font-size: 0.9rem;
-    }
-
-    .forgot-password-form input,
-    .forgot-password-form .reset-btn {
-        font-size: 0.9rem;
-        padding: 0.6rem;
-    }
-
-    .forgot-password-section .shape,
-    .forgot-password-section .shape-2,
-    .forgot-password-section .shape-3 {
-        width: 50px; 
-        height: 50px;
-    }
-}
-/* Responsive Design for Login Section */
-@media (max-width: 768px) {
-    .login-section {
-        padding: 1.5rem;
+    .nav-links {
+        gap: 1rem;
     }
 
     .login-content {
@@ -935,56 +886,24 @@ body {
     }
 
     .login-content h1 {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
 
-    .login-content p {
-        font-size: 1rem;
-    }
-
-    .login-section .shape,
-    .login-section .shape-2,
-    .login-section .shape-3 {
-        width: 80px; 
-        height: 80px;
-    }
-
-    .login-section .shape {
-        top: 5%;
-        left: 10%;
-    }
-
-    .login-section .shape-2 {
-        bottom: 10%;
-        right: 5%;
-    }
-
-    .login-section .shape-3 {
-        top: 60%;
-        left: 70%;
+    .shape, .shape-2, .shape-3 {
+        display: none;
     }
 }
 
 @media (max-width: 480px) {
-    .login-content h1 {
-        font-size: 1.5rem;
-    }
-
-    .login-content p {
-        font-size: 0.9rem;
+    .login-content {
+        padding: 1.5rem;
     }
 
     .login-form input,
-    .login-form .login-btn {
-        font-size: 0.9rem;
-        padding: 0.6rem;
-    }
-
-    .login-section .shape,
-    .login-section .shape-2,
-    .login-section .shape-3 {
-        width: 50px;
-        height: 50px;
+    .login-btn,
+    .forgot-password-btn,
+    .back-btn {
+        padding: 0.7rem;
     }
 }
 /* Sign-Up Section */
@@ -1067,7 +986,14 @@ body {
     transform: none; 
     transition: opacity 1s ease-out, transform 1s ease-out;
 }
-
+.error-message {
+    background: #ffebee;
+    color: #d32f2f;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border-left: 4px solid #d32f2f;
+}
 
 .js-enabled .signup-content {
     opacity: 0;
@@ -1161,7 +1087,6 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Responsive Design for Sign-Up Section */
 @media (max-width: 768px) {
     .signup-section {
         padding: 1.5rem;
@@ -1452,7 +1377,23 @@ body {
     color: #d32f2f;
     background: #ffebee;
     border-radius: 4px;
-    margin: 20px 0;
+    margin: 20px auto;
+    max-width: 80%;
+    border-left: 4px solid #d32f2f; 
+}
+.error-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 500px;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.error-container {
+    position: relative;
+    min-height: 200px; 
 }
 
 .error-message button {
@@ -1576,22 +1517,26 @@ body {
 .profile-page {
     max-width: 800px;
     margin: 50px auto;
-    padding: 20px;
-    background-color: #2c3e50;
-    color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    background-color: white;
+    color: #333;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .profile-header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .profile-title {
     font-size: 28px;
-    font-weight: bold;
-    color: #f39c12;
+    font-weight: 600;
+    color: #4a4a9d;
+    margin-bottom: 10px;
 }
 
 .profile-container {
@@ -1600,92 +1545,113 @@ body {
 
 .profile-info {
     text-align: center;
+    margin-bottom: 30px;
 }
 
 .profile-info h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #4a4a9d;
+    font-weight: 600;
 }
 
 .profile-info p {
-    font-size: 18px;
-    margin: 5px 0;
+    font-size: 16px;
+    margin: 8px 0;
+    color: #555;
 }
 
 .profile-email-link {
-    color: #f39c12;
+    color: #4a4a9d;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
 .profile-email-link:hover {
+    color: #f39c12;
     text-decoration: underline;
 }
 
-/* Upload section for teachers */
 .upload-container {
     margin-top: 30px;
-    padding: 20px;
-    background-color: #444;
-    border-radius: 8px;
+    padding: 25px;
+    background-color: #f0f4f8;
+    border-radius: 6px;
+    border-left: 4px solid #4a4a9d;
 }
 
 .upload-title {
-    font-size: 22px;
-    color: #f39c12;
-    margin-bottom: 15px;
+    font-size: 20px;
+    color: #4a4a9d;
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
-/* General Styling for the Form */
+/* Form styling */
 .upload-form .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .upload-form label {
     display: block;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a4a9d;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .upload-form input, 
 .upload-form select {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #f39c12;
-    border-radius: 5px;
-    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 15px;
+    transition: border 0.3s ease;
+    background-color: white;
+}
+
+.upload-form input:focus, 
+.upload-form select:focus {
+    border-color: #4a4a9d;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 74, 157, 0.1);
 }
 
 .upload-btn {
     width: 100%;
-    padding: 10px;
-    background-color: #f39c12;
+    padding: 12px;
+    background-color: #4a4a9d;
     color: white;
     border: none;
-    border-radius: 5px;
-    font-size: 18px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
-    margin-top: 10px;
+    transition: background-color 0.3s ease;
 }
 
 .upload-btn:hover {
-    background-color: #e08e0b;
+    background-color: #3a3a8d;
 }
 
 /* Papers List Styling */
 .papers-container {
     margin-top: 30px;
-    padding: 20px;
-    background-color: #444;
-    border-radius: 8px;
+    padding: 25px;
+    background-color: #f0f4f8;
+    border-radius: 6px;
+    border-left: 4px solid #f39c12;
 }
 
 .papers-title {
-    font-size: 22px;
-    color: #f39c12;
-    margin-bottom: 15px;
+    font-size: 20px;
+    color: #4a4a9d;
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
 .papers-list {
@@ -1694,16 +1660,168 @@ body {
 }
 
 .papers-list li {
-    padding: 10px;
-    border-bottom: 1px solid #f39c12;
+    padding: 12px 15px;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s ease;
+}
+
+.papers-list li:hover {
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 .papers-list a {
-    color: #f39c12;
+    color: #4a4a9d;
     text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.papers-list a:before {
+    content: "→";
+    color: #f39c12;
+    margin-right: 10px;
     font-weight: bold;
 }
 
 .papers-list a:hover {
+    color: #f39c12;
+    text-decoration: none;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    background-color: #f0f4f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a4a9d;
+    font-size: 40px;
+    font-weight: bold;
+    border: 3px solid #e0e0e0;
+}
+
+@media (max-width: 768px) {
+    .profile-page {
+        margin: 20px;
+        padding: 20px;
+    }
+}
+
+/* 404 Error Page */
+.error-page {
+    min-height: calc(100vh - 60px); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f4f8; 
+    color: #000000;
+    padding: 20px;
+    font-family: 'Courier New', Courier, monospace; 
+    line-height: 1.5;
+}
+
+.error-content {
+    width: 100%;
+    max-width: 800px;
+    padding: 30px;
+    background-color: #ffffff; 
+    border: 1px solid #4a4a9d; 
+    border-radius: 10px; 
+    box-shadow: none;   
+}
+
+.error-text {
+    margin: 0;
+    white-space: pre-wrap; 
+    font-size: 16px;
+}
+
+.error-code {
+    color: #4a4a9d; 
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.error-link {
+    color: #4a4a9d; 
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.error-link:hover {
     text-decoration: underline;
+    color: #6a6abf; 
+}
+
+.error-content {
+    user-select: text;
+    cursor: text;
+}
+
+.error-page-500 .error-code {
+    color: #3a3a7d; 
+}
+
+/* About Page */
+.about-page {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f4f8; 
+    color: #000000; 
+    padding: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.5;
+}
+
+.about-content {
+    width: 100%;
+    max-width: 800px;
+    padding: 30px;
+    background-color: #ffffff; 
+    border: 1px solid #4a4a9d; 
+    border-radius: 10px;
+    box-shadow: none;
+}
+
+.about-text {
+    margin: 0;
+    white-space: pre-wrap;
+    font-size: 16px;
+}
+
+.section-title {
+    color: #4a4a9d; 
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    display: block;
+}
+
+.about-link {
+    color: #4a4a9d; 
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.about-link:hover {
+    text-decoration: underline;
+    color: #6a6abf; 
+}
+
+.version {
+    color: #666666; 
+    font-size: 14px;
+    margin-top: 20px;
+    display: block;
+}
+
+.about-content {
+    user-select: text;
+    cursor: text;
 }

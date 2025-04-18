@@ -11,7 +11,7 @@
         <div class="logo">ResearchHub</div>
         <ul class="nav-links">
             <li><a href="/">Home</a></li>
-            <li><a href="#">About</a></li>
+            <li><a href="/about.html">About</a></li>
             <li><a href="/publications.html">Publications</a></li>
             <li><a href="/contact.html">Contact</a></li>
         </ul>
@@ -114,7 +114,7 @@
         </section>
     </main>
     <script>
-        // Check authentication status and update navbar
+        // Check auth status update navbar
         async function checkAuthStatus() {
             try {
                 const response = await fetch('/profile');
@@ -142,7 +142,7 @@
             }
         }
 
-        // Fetch and display profile data
+        // display profile data
         async function fetchProfile() {
             try {
                 const response = await fetch('/profile');
@@ -168,7 +168,7 @@
             }
         }
 
-        // Fetch and display teacher's submitted publications
+        // display teacher's submitted publications
         async function fetchTeacherPublications() {
             try {
                 const response = await fetch('/teachers/publications');
@@ -198,7 +198,7 @@
             }
         }
 
-        // Handle form submission for new publication
+        // form submission for new publication
         document.getElementById('upload-form')?.addEventListener('submit', async function (e) {
             e.preventDefault();
             const formData = {
@@ -214,28 +214,30 @@
             };
 
             try {
-                const response = await fetch('/teachers/submit-publication', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    credentials: 'include', 
-                    body: JSON.stringify(formData),
-                });
-            
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to submit publication');
-                }
+              const response = await fetch('/teachers/submit-publication', {
+                method: 'POST',
+                headers: { 
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                credentials: 'include', 
+                body: JSON.stringify(formData),
+              });
 
-                const result = await response.json();
-                alert('Publication submitted successfully!');
-                document.getElementById('upload-form').reset();
-                fetchTeacherPublications();
+              const data = await response.json();
+              console.log('Status:', response.status);
+              console.log('Data:', data);
+
+              if (!response.ok) {
+                throw new Error(data.message || 'Failed to submit publication');
+              }
+
+              alert('Publication submitted successfully!');
+              document.getElementById('upload-form').reset();
+              fetchTeacherPublications();
             } catch (error) {
-                console.error('Error submitting publication:', error);
-                alert(error.message || 'An error occurred while submitting the publication');
+              console.error('Error submitting publication:', error);
+              alert(error.message || 'An error occurred while submitting the publication');
             }
         });
 
@@ -247,6 +249,5 @@
             }
         });
     </script>
-    <script src="js/main.js"></script>
 </body>
 </html>
