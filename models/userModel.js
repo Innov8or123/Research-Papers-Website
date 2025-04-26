@@ -1,4 +1,3 @@
-// console.log('Loading userModel.js');
 const pool = require('../config/db');
 
 const createUser = async (userData) => {

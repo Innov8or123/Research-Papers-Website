@@ -37,14 +37,14 @@
                 <form class="upload-form" id="upload-form" aria-label="Submit Publication">
                     <!-- Publication Title -->
                     <div class="form-group">
-                        <label for="paper-title">Publication Title <span class="required">*</span></label>
-                        <input type="text" id="paper-title" name="paper-title" required aria-required="true" />
+                        <label for="paper-title">Publication Title</label>
+                        <input type="text" id="paper-title" name="paper-title"  />
                     </div>
                     
                     <!-- Type of Paper -->
                     <div class="form-group">
-                        <label for="type">Type Of Paper <span class="required">*</span></label>
-                        <select id="type" name="type" required>
+                        <label for="type">Type Of Paper</label>
+                        <select id="type" name="type" >
                             <option value="" disabled selected>Select</option>
                             <option value="faculty_publication_journal">Faculty Publication - Journal</option>
                             <option value="faculty_publication_conference">Faculty Publication - Conference</option>
@@ -56,8 +56,8 @@
                     
                     <!-- Conference/Journal Name -->
                     <div class="form-group">
-                        <label for="journal-name">Conference or Journal Name <span class="required">*</span></label>
-                        <input type="text" id="journal-name" name="journal-name" required aria-required="true" />
+                        <label for="journal-name">Conference or Journal Name</label>
+                        <input type="text" id="journal-name" name="journal-name"  />
                     </div>
                     
                     <!-- ISBN or ISSN -->
@@ -68,8 +68,8 @@
                     
                     <!-- Author Type -->
                     <div class="form-group">
-                        <label for="author-type">Author Type <span class="required">*</span></label>
-                        <select id="author-type" name="author-type" required>
+                        <label for="author-type">Author Type</label>
+                        <select id="author-type" name="author-type" >
                             <option value="" disabled selected>Select</option>
                             <option value="principal_author">Principal Author</option>
                             <option value="co_author">Co-Author</option>
@@ -78,26 +78,26 @@
                     
                     <!-- Publication URL -->
                     <div class="form-group">
-                        <label for="paper-link">Publication URL <span class="required">*</span></label>
-                        <input type="url" id="paper-link" name="paper-link" placeholder="https://example.com/paper.pdf" required aria-required="true" />
+                        <label for="paper-link">Publication URL</label>
+                        <input type="url" id="paper-link" name="paper-link" placeholder="https://example.com/paper.pdf" />
                     </div>
                     
                     <!-- Publication Date -->
                     <div class="form-group">
-                        <label for="paper-date">Publication Date <span class="required">*</span></label>
-                        <input type="date" id="paper-date" name="paper-date" required aria-required="true" />
+                        <label for="paper-date">Publication Date </label>
+                        <input type="date" id="paper-date" name="paper-date"  />
                     </div>
                     
                     <!-- Publisher Name -->
                     <div class="form-group">
-                        <label for="publisher">Publisher Name <span class="required">*</span></label>
-                        <input type="text" id="publisher" name="publisher" required aria-required="true" />
+                        <label for="publisher">Publisher Name </label>
+                        <input type="text" id="publisher" name="publisher"  />
                     </div>
 
                     <!-- Faculty Name -->
                     <div class="form-group">
                         <label for="faculty-name">Faculty Name </label>
-                        <input type="text" id="faculty-name" name="faculty-name" required aria-required="true" />
+                        <input type="text" id="faculty-name" name="faculty-name"  />
                     </div>
                     
                     <!-- Submit Button -->
@@ -117,7 +117,7 @@
         // Check auth status update navbar
         async function checkAuthStatus() {
             try {
-                const response = await fetch('/profile');
+                const response = await fetch('/profile', { credentials: 'include' });
                 const navButtons = document.getElementById('nav-buttons');
                 if (response.ok) {
                     navButtons.innerHTML = `
@@ -133,7 +133,7 @@
                     return false;
                 }
             } catch (error) {
-                console.error('Error checking auth status:', error);
+                log.error('Error checking auth status:', error);
                 document.getElementById('nav-buttons').innerHTML = `
                     <a href="/signup.html" class="btn">Sign Up</a>
                     <a href="/login.html" class="btn btn-secondary">Login</a>
@@ -145,7 +145,7 @@
         // display profile data
         async function fetchProfile() {
             try {
-                const response = await fetch('/profile');
+                const response = await fetch('/profile', { credentials: 'include' });
                 if (!response.ok) {
                     window.location.href = '/login.html';
                     return;
@@ -163,7 +163,7 @@
                     fetchTeacherPublications();
                 }
             } catch (error) {
-                console.error('Error fetching profile:', error);
+                log.error('Error fetching profile:', error);
                 window.location.href = '/login.html';
             }
         }
@@ -171,7 +171,7 @@
         // display teacher's submitted publications
         async function fetchTeacherPublications() {
             try {
-                const response = await fetch('/teachers/publications');
+                const response = await fetch('/teachers/publications', { credentials: 'include' });
                 if (!response.ok) {
                     throw new Error('Failed to fetch publications');
                 }
@@ -179,21 +179,21 @@
                 const papersList = document.getElementById('papers-list');
                 papersList.innerHTML = '';
 
-                if (publications.length === 0) {  
+                if (publications.length === 0) {
                     papersList.innerHTML = '<li>No publications submitted yet.</li>';
                     return;
                 }
-        
+
                 publications.forEach(pub => {
                     const li = document.createElement('li');
                     li.innerHTML = `
                         <a href="${pub.doi || '#'}" target="_blank">${pub.title}</a>
-                        <p>Year: ${pub.year_of_publication}</p>  
+                        <p>Year: ${pub.year_of_publication}</p>
                     `;
                     papersList.appendChild(li);
                 });
             } catch (error) {
-                console.error('Error fetching publications:', error);
+                log.error('Error fetching publications:', error);
                 document.getElementById('papers-list').innerHTML = '<li>Error loading publications.</li>';
             }
         }
@@ -214,30 +214,26 @@
             };
 
             try {
-              const response = await fetch('/teachers/submit-publication', {
-                method: 'POST',
-                headers: { 
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                credentials: 'include', 
-                body: JSON.stringify(formData),
-              });
-
-              const data = await response.json();
-              console.log('Status:', response.status);
-              console.log('Data:', data);
-
-              if (!response.ok) {
-                throw new Error(data.message || 'Failed to submit publication');
-              }
-
-              alert('Publication submitted successfully!');
-              document.getElementById('upload-form').reset();
-              fetchTeacherPublications();
+                const response = await fetch('/teachers/submit-publication', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(formData),
+                });
+                const data = await response.json();
+                log.debug('Publication submitted:', { status: response.status, data });
+                if (!response.ok) {
+                    throw new Error(data.message || 'Failed to submit publication');
+                }
+                alert('Publication submitted successfully!');
+                document.getElementById('upload-form').reset();
+                fetchTeacherPublications();
             } catch (error) {
-              console.error('Error submitting publication:', error);
-              alert(error.message || 'An error occurred while submitting the publication');
+                log.error('Error submitting publication:', error);
+                alert(error.message || 'An error occurred while submitting the publication');
             }
         });
 

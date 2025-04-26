@@ -1,16 +1,9 @@
-// console.log('Loading studentController.js');
-// console.log('Importing dependencies...');
 const pool = require('../config/db');
-// console.log('Imported pool');
 const userModel = require('../models/userModel');
-// console.log('Imported userModel');
 const AppError = require('../utils/appError');
-// console.log('Imported AppError');
 const catchAsync = require('../utils/catchAsync');
-// console.log('Imported catchAsync');
 const APIFeatures = require('../utils/apiFeatures');
 
-// console.log('Defining getAllResearchLinks...');
 const getAllResearchLinks = catchAsync(async (req, res, next) => {
     try {
         let query = 'SELECT * FROM publications';
@@ -39,7 +32,6 @@ const getAllResearchLinks = catchAsync(async (req, res, next) => {
     }
 });
 
-// console.log('Defining getProfile');
 const getProfile = catchAsync(async (req, res, next) => {
     try {
         if (!req.session.user) {
@@ -55,6 +47,4 @@ const getProfile = catchAsync(async (req, res, next) => {
     }
 });
 
-// console.log('Exporting functions');
 module.exports = { getAllResearchLinks, getProfile };
-// console.log('Exporting from studentController:', module.exports);

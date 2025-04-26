@@ -51,12 +51,15 @@
         let currentPage = 1;
         let totalPages = 1;
         let allPublications = [];
-        let itemsPerPage = 10; 
+        let itemsPerPage = 10;
+
         function changeItemsPerPage(value) {
             itemsPerPage = parseInt(value);
-            fetchPublications(1); 
+            fetchPublications(1);
         }
+
         let user = null;
+
         async function checkAuthStatus() {
             try {
                 const response = await fetch('/profile', {
@@ -64,10 +67,9 @@
                     credentials: 'include'
                 });
                 const navButtons = document.querySelector('.nav-buttons');
-                    if (response.ok) {
-                        const data = await response.json();
-                        const role = data.role;
-
+                if (response.ok) {
+                    const data = await response.json();
+                    const role = data.role;
                     if (role === 'admin') {
                         navButtons.innerHTML = `
                             <a href="/admin.html" class="btn">Admin Dashboard</a>
@@ -86,13 +88,14 @@
                     `;
                 }
             } catch (error) {
-                console.error('Error checking auth status:', error);
+                log.error('Error checking auth status:', error);
                 document.querySelector('.nav-buttons').innerHTML = `
                     <a href="/signup.html" class="btn">Sign Up</a>
                     <a href="/login.html" class="btn btn-secondary">Login</a>
                 `;
             }
         }
+
         async function fetchUserRole() {
             try {
                 const response = await fetch('/auth/role', { credentials: 'include' });
@@ -100,7 +103,7 @@
                 const data = await response.json();
                 user = { role: data.role };
             } catch (error) {
-                console.error('Error fetching user role:', error);
+                log.error('Error fetching user role:', error);
                 window.location.href = '/login.html';
             }
         }
@@ -118,34 +121,34 @@
                 if (currentUserRole) {
                     url += `&role=${currentUserRole}`;
                 }
-            
+
                 const response = await fetch(url, { credentials: 'include' });
                 const data = await response.json();
-            
+
                 if (!response.ok) {
                     throw new Error(data.message || `HTTP error! status: ${response.status}`);
                 }
-            
+
                 const publications = data.data?.publications || data.publications || [];
                 const pagination = data.pagination || {
                     page: page,
                     totalPages: Math.ceil((data.pagination?.totalItems || publications.length) / itemsPerPage),
                     totalItems: data.pagination?.totalItems || publications.length
                 };
-            
+
                 currentPage = pagination.page || 1;
                 totalPages = pagination.totalPages || 1;
                 allPublications = publications;
-            
+
                 displayPublications(publications);
                 updatePaginationControls(pagination);
             } catch (error) {
-                console.error('Fetch error:', error);
+                log.error('Fetch error:', error);
                 grid.innerHTML = `
                     <div class="error-container">
                         <div class="error-message error-overlay">
-                            <p>${error.message.includes('Unexpected token') 
-                                ? 'Invalid server response' 
+                            <p>${error.message.includes('Unexpected token')
+                                ? 'Invalid server response'
                                 : error.message}</p>
                             <button onclick="fetchPublications()">Retry</button>
                         </div>
@@ -153,6 +156,7 @@
                 `;
             }
         }
+
         function displayPublications(publications) {
             const grid = document.getElementById('papers-grid');
             grid.innerHTML = '';
@@ -172,12 +176,12 @@
                     <p>Year: ${pub.year_of_publication || 'N/A'}</p>
                     <p>Publisher: ${pub.publisher_name || 'N/A'}</p>
                     <p>Faculty: ${pub.faculty_name || 'N/A'}</p>
-
                     ${pub.doi ? `<p><a href="${pub.doi}" target="_blank">DOI Link</a></p>` : ''}
                 `;
                 grid.appendChild(paperDiv);
             });
         }
+
         function updatePaginationControls(pagination) {
             const paginationDiv = document.getElementById('pagination-controls');
             if (!pagination || totalPages <= 1) {
@@ -191,11 +195,9 @@
                         onclick="fetchPublications(${currentPage - 1})">
                         « Previous
                     </button>
-                    
                     <span class="page-info">
                         Page ${currentPage} of ${totalPages}
                     </span>
-                    
                     <button ${currentPage >= totalPages ? 'disabled' : ''} 
                         onclick="fetchPublications(${currentPage + 1})">
                         Next »
@@ -207,7 +209,7 @@
                 let pageButtons = '<div class="page-numbers">';
                 const startPage = Math.max(1, currentPage - 2);
                 const endPage = Math.min(totalPages, currentPage + 2);
-                
+
                 for (let i = startPage; i <= endPage; i++) {
                     pageButtons += `
                         <button ${i === currentPage ? 'class="active"' : ''} 
@@ -222,6 +224,7 @@
 
             paginationDiv.innerHTML = paginationHTML;
         }
+
         function showSuggestions(searchTerm) {
             const dropdown = document.getElementById('suggestions-dropdown');
             if (!searchTerm) {
@@ -280,7 +283,7 @@
                 dropdown.style.display = 'none';
             }
         });
-        
+
         checkAuthStatus();
         fetchPublications();
     </script>

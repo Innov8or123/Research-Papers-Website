@@ -1,13 +1,7 @@
-// console.log('Loading teacherController.js');
-// console.log('Importing dependencies');
 const pool = require('../config/db'); 
-// console.log('Imported pool');
 const userModel = require('../models/userModel'); 
-// console.log('Imported userModel');
 const AppError = require('../utils/appError');
-// console.log('Imported AppError');
 const catchAsync = require('../utils/catchAsync');
-// console.log('Imported catchAsync');
 const Publication = require('../models/publicationModel');
 
 const submitPublication = catchAsync(async (req, res) => {
@@ -83,6 +77,4 @@ const getProfile = catchAsync(async (req, res, next) => {
     }
 });
 
-// console.log('Exporting functions');
 module.exports = { getSubmittedPublications, submitPublication, getProfile };
-// console.log('Exporting from teacherController:', module.exports);

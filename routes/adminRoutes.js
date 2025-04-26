@@ -6,31 +6,10 @@ const { ensureAuthenticated, ensureRole } = require('../middleware/authMiddlewar
 const upload = require('../config/multer');
 const validateCsrfToken = require('../middleware/csrfMiddleware');
 
-router.post('/upload-debug', (req, res) => {
-    console.log('Headers:', req.headers);
-
-    // debug ends here not going forward 
-    //chunks and all not workig ???
-    
-    const chunks = [];
-    req.on('data', chunk => {
-      chunks.push(chunk);
-      console.log('Received chunk:', chunk.length, 'bytes');
-    });
-    
-    req.on('end', () => {
-      const buffer = Buffer.concat(chunks);
-      require('fs').writeFileSync('debug_upload.bin', buffer);
-      console.log('Total received:', buffer.length, 'bytes');
-      res.send('Debug completed - file saved');
-    });
-  });
-
 router.post(
-    '/upload-publications', 
-    ensureAuthenticated, 
-    ensureRole(['admin']), 
-    upload.single('file'), 
+    '/upload-publications',
+    ensureAuthenticated,
+    ensureRole(['admin']),
     publicationController.uploadPublications
 );
 

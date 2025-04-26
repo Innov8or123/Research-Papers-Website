@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.4.0, for macos11.6 (arm64)
 --
--- Host: localhost    Database: research_papers_db
+-- Host: 127.0.0.1    Database: research_papers_db
 -- ------------------------------------------------------
 -- Server version	8.4.0
 
@@ -22,14 +22,15 @@
 DROP TABLE IF EXISTS `messages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE messages (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
-  message TEXT NOT NULL,
-  date DATE NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE `messages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `date` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,26 +40,21 @@ CREATE TABLE messages (
 DROP TABLE IF EXISTS `publications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE publications (
-  id SERIAL PRIMARY KEY,
-  author_id INTEGER NOT NULL,
-  title VARCHAR(255) NOT NULL,
-  type_of_paper VARCHAR(50) NOT NULL CHECK (type_of_paper IN (
-    'faculty_publication_journal',
-    'faculty_publication_conference',
-    'book_chapter_publication',
-    'research_proposal',
-    'student_publication'
-  )),
-  conference_or_journal_name VARCHAR(255) NOT NULL,
-  issn_isbn_number VARCHAR(50),
-  author_type VARCHAR(20) NOT NULL CHECK (author_type IN ('principal_author', 'co_author')),
-  doi TEXT,
-  year_of_publication INTEGER NOT NULL,
-  publisher_name VARCHAR(255) NOT NULL,
-  faculty_name VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+CREATE TABLE `publications` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `author_id` int NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `type_of_paper` enum('faculty_publication_journal','faculty_publication_conference','book_chapter_publication','research_proposal','student_publication') NOT NULL,
+  `conference_or_journal_name` varchar(255) NOT NULL,
+  `issn_isbn_number` varchar(255) DEFAULT NULL,
+  `author_type` enum('principal_author','co_author') NOT NULL,
+  `doi` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `year_of_publication` int NOT NULL,
+  `publisher_name` varchar(255) NOT NULL,
+  `faculty_name` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,18 +64,20 @@ CREATE TABLE publications (
 DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  firstName VARCHAR(255) NOT NULL,
-  lastName VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'teacher', 'student')),
-  department VARCHAR(255) NOT NULL,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  resetToken VARCHAR(255),
-  resetTokenExpiry TIMESTAMP
-);
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` enum('admin','teacher','student') NOT NULL,
+  `department` varchar(255) NOT NULL,
+  `createdAt` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `resetToken` varchar(255) DEFAULT NULL,
+  `resetTokenExpiry` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -91,4 +89,4 @@ CREATE TABLE users (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-13 17:58:41
+-- Dump completed on 2025-04-25 22:23:42

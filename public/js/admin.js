@@ -1,13 +1,22 @@
 // Fetch CSRF token
-fetch('/get-csrf-token')
-    .then(res => res.json())
+fetch('/get-csrf-token', {
+    method: 'GET',
+    credentials: 'include' 
+})
+    .then(res => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json();
+    })
     .then(data => {
         document.getElementById('csrfToken').value = data.csrfToken;
+        document.getElementById('upload-message').innerHTML = ''; 
     })
     .catch(err => {
-        console.error('Error fetching CSRF token:', err);
-        document.getElementById('upload-message').innerHTML = '<p class="error-message">Error fetching CSRF token.</p>';
+        document.getElementById('upload-message').innerHTML = `<p class="error-message">Error fetching CSRF token: ${err.message}</p>`;
     });
+
 
 // form submission
 document.getElementById('upload-form').addEventListener('submit', async (e) => {
@@ -18,6 +27,14 @@ document.getElementById('upload-form').addEventListener('submit', async (e) => {
     uploadBtn.disabled = true;
     uploadBtn.appendChild(spinner);
     const formData = new FormData(e.target);
+
+    const fileInput = e.target.querySelector('input[type="file"]');
+    if (!fileInput.files || fileInput.files.length === 0) {
+        document.getElementById('upload-message').innerHTML = '<p class="error-message">Please select a file to upload.</p>';
+        uploadBtn.disabled = false;
+        uploadBtn.removeChild(spinner);
+        return;
+    }
     try {
         const response = await fetch('/admin/upload-publications', {
             method: 'POST',

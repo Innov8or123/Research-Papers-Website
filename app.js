@@ -6,21 +6,21 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
-const fileUpload = require('express-fileupload');
 const multer = require('multer');
 const cors = require('cors');
 
 dotenv.config();
 
+const upload = require('./config/multer');
 const AppError = require('./utils/appError');
 const studentRouter = require('./routes/studentRoutes');
 const teacherRouter = require('./routes/teacherRoutes');
 const authRouter = require('./routes/authRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const userModel = require('./models/userModel'); 
+const profileRouter = require('./routes/profilesRoute');
 const { ensureAuthenticated } = require('./middleware/authMiddleware');
 const { validateCsrfToken } = require('./middleware/csrfMiddleware');
-// const { error } = require('console');
 
 const app = express();
 
@@ -33,18 +33,12 @@ if (missingEnvVars.length > 0) {
 }
 
 app.use('/admin/upload-publications', (req, res, next) => {
-    if (req.headers['content-type']?.startsWith('multipart/form-data')) {
-      return next();
+    if (!req.headers['content-type']?.startsWith('multipart/form-data')) {
+        return express.json()(req, res, next);
     }
-    express.json()(req, res, next);
-  });
+    next();
+});
 
-//   app.use('/admin/upload-publications', (req, res, next) => {
-//     console.log('Request received. Raw headers:', req.rawHeaders);
-//     req.on('data', chunk => console.log('Received chunk:', chunk.length));
-//     req.on('end', () => console.log('Request ended'));
-//     next();
-//   });
 
 app.use(cors({
   origin: 'http://localhost:3000',
@@ -78,7 +72,6 @@ const pool = mysql.createPool({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(fileUpload());
 app.use(helmet());
 app.use(
     session({
@@ -106,6 +99,9 @@ app.use((req, res, next) => {
 
 // CSRF Validation Middleware for POST requests
 app.get('/get-csrf-token', (req, res) => {
+    if (!req.session.csrfToken) {
+        req.session.csrfToken = crypto.randomBytes(32).toString('hex');
+    }
     res.json({ csrfToken: req.session.csrfToken });
 });
 
@@ -271,21 +267,6 @@ app.post('/auth/signup', async (req, res, next) => {
 });
 
 // Global Error Handling Middleware
-
-// app.use((err, req, res, next) => {
-//     console.error(err.stack);
-//     const status = err.statusCode || 500;
-//     res.status(status).json({
-//         message: err.message || 'Something went wrong!',
-//         status: 'error',
-//     });
-// });
-
-// // 404 Handler
-// 1)
-// app.use((req, res, next) => {
-//     res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
-// });
 
 // 2)
 app.all('*', (req, res, next) => {

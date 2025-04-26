@@ -266,8 +266,8 @@
         <div class="section">
             <h2>Upload Publications</h2>
             <form id="upload-form" action="/admin/upload-publications" method="POST" enctype="multipart/form-data">
-                <input type="file" name="file" accept=".xlsx, .xls" required />
-                <input type="hidden" name="_csrf" id="csrfToken">
+                <input type="file" name="file" accept=".xlsx, .xls, .txt" required />
+                <input type="hidden" id="csrfToken" name="_csrf" value="">
                 <button type="submit">Upload</button>
             </form>
             <div id="upload-message"></div>

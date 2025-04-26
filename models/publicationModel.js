@@ -51,16 +51,16 @@ const Publication = {
     bulkInsertPublications: async (publications) => {
         try {
             const values = publications.map(pub => [
-                pub.title,
-                pub.type_of_paper,
-                pub.conference_or_journal_name,
+                pub.title || null,
+                pub.type_of_paper || null,
+                pub.conference_or_journal_name || null,
                 pub.issn_isbn_number || null,
-                pub.author_type,
+                pub.author_type || null,
                 pub.author_id || null,
                 pub.doi || null,
-                pub.year_of_publication,
-                pub.publisher_name,
-                pub.faculty_name
+                pub.year_of_publication || null,
+                pub.publisher_name || null,
+                pub.faculty_name || null
             ]);
             const [result] = await pool.query(
                 'INSERT INTO publications (title, type_of_paper, conference_or_journal_name, issn_isbn_number, author_type, author_id, doi, year_of_publication, publisher_name, faculty_name) VALUES ?',
